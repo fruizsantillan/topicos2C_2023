@@ -1,0 +1,17 @@
+# depslib dependency file v1.0
+1692059117 source:/home/finnegans/Documentos/unlam/progra2023/funciones/main.c
+	"main.h"
+
+1692058292 /home/finnegans/Documentos/unlam/progra2023/funciones/main.h
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+
+1692060673 source:/home/finnegans/Documents/unlam/progra2023/fecha/main.c
+	"main.h"
+
+1692060996 /home/finnegans/Documents/unlam/progra2023/fecha/main.h
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+

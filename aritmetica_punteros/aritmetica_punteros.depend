@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1693270772 source:/home/finnegans/Documents/unlam/progra2023/aritmetica_punteros/aritmetica_punteros.c
+	"aritmetica_punteros.h"
+
+1693269584 /home/finnegans/Documents/unlam/progra2023/aritmetica_punteros/aritmetica_punteros.h
+	<stdio.h>
+	<stdlib.h>
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+
+1693269949 source:/home/finnegans/Documents/unlam/progra2023/aritmetica_punteros/main.c
+	"aritmetica_punteros.h"
+

@@ -1,0 +1,18 @@
+# depslib dependency file v1.0
+1693875331 source:/home/finnegans/Documents/unlam/progra2023/TDAPalabra/main.c
+	"cadenas.h"
+
+1693871205 /home/finnegans/Documents/unlam/progra2023/TDAPalabra/cadenas.h
+
+1693968141 source:/home/finnegans/Documents/unlam/progra2023/TDAPalabra/TDAPalabra.c
+	"TDAPalabra.h"
+
+1693968116 source:/home/finnegans/Documents/unlam/progra2023/TDAPalabra/cadenas.c
+	"TDAPalabra.h"
+
+1693935101 /home/finnegans/Documents/unlam/progra2023/TDAPalabra/TDAPalabra.h
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	<ctype.h>
+
