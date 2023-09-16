@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1694470018 source:/home/finnegans/Documents/unlam/progra2023/mi_string_h/mi_string_h.c
+	"mi_string_h.h"
+
+1694271776 /home/finnegans/Documents/unlam/progra2023/mi_string_h/mi_string_h.h
+	<stdio.h>
+	<stdlib.h>
+
+1694470032 source:/home/finnegans/Documents/unlam/progra2023/mi_string_h/main.c
+	"mi_string_h.h"
+

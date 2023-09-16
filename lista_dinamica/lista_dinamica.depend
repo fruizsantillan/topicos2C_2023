@@ -1,0 +1,12 @@
+# depslib dependency file v1.0
+1694475249 source:/home/finnegans/Documents/unlam/progra2023/lista_dinamica/main.c
+	"lista_dinamica.h"
+
+1694477469 /home/finnegans/Documents/unlam/progra2023/lista_dinamica/lista_dinamica.h
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+
+1694476354 source:/home/finnegans/Documents/unlam/progra2023/lista_dinamica/lista_dinamica.c
+	"lista_dinamica.h"
+
