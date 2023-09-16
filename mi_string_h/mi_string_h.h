@@ -14,8 +14,8 @@ char* mi_strcpy(char* dest, const char* src);
 //Copies the string pointed to, by src to dest.
 size_t mi_strlen(const char* str);
 //Computes the length of the string str up to but not including the terminating null character.
-char* strrchr(const char* str, int c);
+char* mi_strrchr(const char* str, int c);
 //Searches for the last occurrence of the character c (an unsigned char) in the string pointed to by the argument str.
-char *strstr(const char *haystack, const char *needle);
+char *mi_strstr(const char *haystack, const char *needle);
 //Finds the first occurrence of the entire string needle (not including the terminating null character) which appears in the string haystack.
 #endif // MI_STRING_H_H_INCLUDED

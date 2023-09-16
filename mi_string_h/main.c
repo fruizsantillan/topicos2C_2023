@@ -1,7 +1,9 @@
-#include "stdio.h"
+#include "mi_string_h.h"
 
 int main()
 {
-    printf("%d", sizeof(int));
+    char text1[] = "independiente";
+    char text2[] = "depen";
+    printf("%s", mi_strstr(text1, text2));
     return 0;
 }
