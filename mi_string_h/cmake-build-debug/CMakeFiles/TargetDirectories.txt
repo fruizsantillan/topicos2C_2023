@@ -1,0 +1,3 @@
+C:/Users/facu-/Documents/UNLaM/Ingenieria/planNuevo/2023/topicos2C_2023/mi_string_h/cmake-build-debug/CMakeFiles/mi_string_h.dir
+C:/Users/facu-/Documents/UNLaM/Ingenieria/planNuevo/2023/topicos2C_2023/mi_string_h/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/facu-/Documents/UNLaM/Ingenieria/planNuevo/2023/topicos2C_2023/mi_string_h/cmake-build-debug/CMakeFiles/rebuild_cache.dir

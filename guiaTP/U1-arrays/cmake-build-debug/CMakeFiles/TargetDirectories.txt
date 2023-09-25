@@ -1,0 +1,3 @@
+C:/Users/facu-/Documents/UNLaM/Ingenieria/planNuevo/2023/topicos2C_2023/guiaTP/U1-arrays/cmake-build-debug/CMakeFiles/U1_arrays.dir
+C:/Users/facu-/Documents/UNLaM/Ingenieria/planNuevo/2023/topicos2C_2023/guiaTP/U1-arrays/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/facu-/Documents/UNLaM/Ingenieria/planNuevo/2023/topicos2C_2023/guiaTP/U1-arrays/cmake-build-debug/CMakeFiles/rebuild_cache.dir

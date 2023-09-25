@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1695617068 source:c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\guiatp\u1 - array\arrays.c
+	"arrays.h"
+
+1695616993 c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\guiatp\u1 - array\arrays.h
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	<string.h>
+	<ctype.h>
+
+1695617098 source:c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\guiatp\u1 - array\main.c
+	"arrays.h"
+
