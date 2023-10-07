@@ -9,5 +9,5 @@ typedef char booleano;
 
 /* aquí deben declarar sus prototipos de funciones */
 
-
+float calculaVelDesdePeriodo(const float periodo);
 #endif // FUNCIONES_H_INCLUDED
