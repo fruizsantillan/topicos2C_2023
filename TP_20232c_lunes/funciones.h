@@ -10,4 +10,6 @@ typedef char booleano;
 /* aquí deben declarar sus prototipos de funciones */
 
 float calculaVelDesdePeriodo(const float periodo);
+float calculaAlturaDesdeVelocidad(const float velocidad);
+float calculaVelDesdeAltura(const float altura);
 #endif // FUNCIONES_H_INCLUDED
