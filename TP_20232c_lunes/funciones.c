@@ -36,132 +36,151 @@ double milisegAMin(double miliseg)
     return miliseg / 60000.0;
 }
 
-float calculaAlturaEnFuncionTiempo(const float tiempo, const float velocidad)
+float calculaAlturaEnFuncionTiempo(const float tiempo, const float velocidad, const float alturaMaximaDeLaPelota, const float alturaGolpe)
 {
-    return velocidad * tiempo + ((1/2) * GRAVEDAD * pow(tiempo, 2));
+    float alturaCalculada = velocidad * tiempo + ((1/2.0) * GRAVEDAD * pow(tiempo, 2));
+    int subiendo = 1;
+
+    if(alturaCalculada > alturaMaximaDeLaPelota)
+    {
+        alturaCalculada = alturaMaximaDeLaPelota - (alturaCalculada - alturaMaximaDeLaPelota);
+        subiendo = 0;
+        if(alturaCalculada == 0)
+        {
+            alturaCalculada = alturaGolpe;
+        }
+    } else if (alturaCalculada < alturaGolpe) {
+        alturaCalculada = alturaGolpe + (alturaGolpe - alturaCalculada);
+        subiendo = 1;
+    }
+
+    return alturaCalculada;
+}
+
+float calcularDistanciaRecorrida(float duracionJuegoEnMinutos, float velocidadInicial, float alturaMaximaDeLaPelota, float periodo)
+{
+    return ((duracionJuegoEnMinutos * 60) * alturaMaximaDeLaPelota) / periodo;
 }
 
 int calculaCantAlineamientos(t_juego* juegos)
 {
     t_coordenada coordenadas[CANT_JUGADORES];
     int duracionAlineamiento = 0;
-    int cantidadAlineamientos = 0;
     t_instante instanteAlineamiento;
-    instanteAlineamiento.milisegundo = 0;
-    instanteAlineamiento.segundo = 0;
-    instanteAlineamiento.minuto = 0;
-
-    juegos->cantidadAlineamientos = 0;
+    int subiendo = 1;
+    int cantAlineamientos = 0;
 
     for(int i = 0; i < CANT_JUGADORES; i++)
         coordenadas[i].x = juegos->jugadores[i].posicion;
 
-    for(int j = 0; j < CANT_MILISEG; j++)
+    for(int j = 1; j < CANT_MILISEG; j++)
     {
         for(int k = 0; k < CANT_JUGADORES; k++)
         {
-            coordenadas[k].y = (calculaAlturaEnFuncionTiempo(milisegASeg(j), juegos->jugadores[k].velocidadInicial));
+            double alturaCalculada = calculaAlturaEnFuncionTiempo(milisegASeg(j), juegos->jugadores[k].velocidadInicial,
+                                                           juegos->jugadores[k].alturaMaximaDeLaPelota,
+                                                           juegos->jugadores[k].alturaGolpe);
 
+            if (alturaCalculada >= juegos->jugadores[k].alturaMaximaDeLaPelota) {
+                subiendo = 0;
+            } else if (alturaCalculada <= juegos->jugadores[k].alturaGolpe) {
+                subiendo = 1;
+            }
+
+            if (subiendo) {
+                // La pelota sube por lo tanto la altura no necesita ajustes.
+            } else {
+                alturaCalculada = juegos->jugadores[k].alturaMaximaDeLaPelota - (alturaCalculada - juegos->jugadores[k].alturaMaximaDeLaPelota);
+            }
         }
 
         float pendienteAB = fabs(calculaPendiente(&coordenadas[0], &coordenadas[1]));
         float pendienteBC = fabs(calculaPendiente(&coordenadas[1], &coordenadas[2]));
 
-        if(pendienteAB - pendienteBC < DELTA)
+        if (fabs(pendienteAB - pendienteBC) < DELTA && duracionAlineamiento == 0)
         {
-            instanteAlineamiento.milisegundo = j % 1000;
+            instanteAlineamiento.milisegundo = j;
             instanteAlineamiento.segundo = milisegASeg(j);
             instanteAlineamiento.minuto = milisegAMin(j);
 
-            juegos->alineamientos[juegos->cantidadAlineamientos].instanteInicial = instanteAlineamiento;
-            juegos->alineamientos[juegos->cantidadAlineamientos].pendiente = pendienteAB - pendienteBC;
-            juegos->alineamientos[juegos->cantidadAlineamientos].pos1 = coordenadas[0];
-            juegos->alineamientos[juegos->cantidadAlineamientos].pos2 = coordenadas[1];
-            juegos->alineamientos[juegos->cantidadAlineamientos].pos3 = coordenadas[2];
-            juegos->cantidadAlineamientos++;
-        }
-    }
-}
+            juegos->alineamientos[cantAlineamientos].duracion = 0;
+            juegos->alineamientos[cantAlineamientos].instanteInicial = instanteAlineamiento;
+            juegos->alineamientos[cantAlineamientos].pendiente = fabs(pendienteAB - pendienteBC);
+            juegos->alineamientos[cantAlineamientos].pos1 = coordenadas[0];
+            juegos->alineamientos[cantAlineamientos].pos2 = coordenadas[1];
+            juegos->alineamientos[cantAlineamientos].pos3 = coordenadas[2];
 
+            cantAlineamientos++;
+            duracionAlineamiento = 1;
+        }
+        else if (fabs(pendienteAB - pendienteBC) < DELTA)
+            duracionAlineamiento++;
+        else
+            duracionAlineamiento = 0;
+    }
+    juegos->cantidadAlineamientos = cantAlineamientos;
+}
 
 char obtenerValorPorTeclado(const char *opcionesValidas, const char* primerMensaje, const char* segundoMensaje)
 {
-
     /* Aquí deben hacer todas las validaciones necesarias para que el reporte extendido se muestre a pedido del usuario */
-    char teclaIngresada='s';
+    char teclaIngresada;
+
+    printf(primerMensaje);
+    scanf("%c", &teclaIngresada);
+
+    while(teclaIngresada != opcionesValidas[0] && teclaIngresada != opcionesValidas[1])
+    {
+        printf(segundoMensaje);
+        scanf("%c", &teclaIngresada);
+    }
 
     return teclaIngresada;
 }
 
-void solucionTP(t_juego* juegos)
+void calcularDatosJugador(t_jugador *jugador, int juegoIndex, int jugadorIndex)
 {
-    //Datos brindados por el enunciado
+    //Datos brindados por el enunciado.
     const float duracionJuegoEnMinutos = 3.0;
     const float periodosMessiSegundos[CANT_JUEGOS] = {1.5, 3.0, 5.0};
     const float alturaTotalAcunaMetros[CANT_JUEGOS] = {3.0, 11.11, 14.14};
     const int frecuenciasDiMariaMinuto[CANT_JUEGOS] = {10, 15, 30};
 
-    for(int i = 0; i < CANT_JUEGOS; i++)
-    {//Iteramos por la cantidad de juegos
-        for(int j = 0; j < CANT_JUGADORES; j++)
-        {//Iteramos por la cantidad de jugadores
-            switch(j){//Realizamos los calculos segun el jugador
-                case 0:
-                //Messi. Nos dicen que patea cada x tiempo la pelota.
-                    (juegos + i)->jugadores[j].velocidadInicial = calculaVelDesdePeriodo(periodosMessiSegundos[i]);
-                    float alturaTempMessi = calculaAlturaDesdeVelocidad((juegos + i)->jugadores[j].velocidadInicial);
-                    if(alturaTempMessi > 1.5)
-                    {
-                        (juegos + i)->jugadores[j].alturaGolpe = (juegos + i)->jugadores[j].estatura * 0.15;
-                        (juegos + i)->jugadores[j].alturaMaximaDeLaPelota = alturaTempMessi + (juegos + i)->jugadores[j].alturaGolpe;
-                    }
-                    else
-                    {
-                        (juegos + i)->jugadores[j].alturaGolpe = (juegos + i)->jugadores[j].estatura * 0.1;
-                        (juegos + i)->jugadores[j].alturaMaximaDeLaPelota = alturaTempMessi + (juegos + i)->jugadores[j].alturaGolpe;
-                    }
+    switch (jugadorIndex)
+    {
+        case 0: // Messi
+            jugador->velocidadInicial = calculaVelDesdePeriodo(periodosMessiSegundos[juegoIndex]);
+            float alturaTempMessi = calculaAlturaDesdeVelocidad(jugador->velocidadInicial);
+            jugador->alturaGolpe = (alturaTempMessi > 1.5) ? jugador->estatura * 0.15 : jugador->estatura * 0.1;
+            jugador->alturaMaximaDeLaPelota = alturaTempMessi + jugador->alturaGolpe;
+            jugador->golpesPorMinuto = (duracionJuegoEnMinutos * 60) / periodosMessiSegundos[juegoIndex];
+            jugador->distanciaRecorrida = ((duracionJuegoEnMinutos * 60) * jugador->alturaMaximaDeLaPelota) / periodosMessiSegundos[juegoIndex];
+            break;
+        case 1: // DiMaria
+            jugador->golpesPorMinuto = frecuenciasDiMariaMinuto[juegoIndex];
+            jugador->velocidadInicial = calculaVelDesdePeriodo(60.0 / jugador->golpesPorMinuto);
+            float alturaTempDiMaria = calculaAlturaDesdeVelocidad(jugador->velocidadInicial);
+            jugador->alturaGolpe = (alturaTempDiMaria > 1.5) ? jugador->estatura * 0.15 : jugador->estatura * 0.1;
+            jugador->alturaMaximaDeLaPelota = alturaTempDiMaria + jugador->alturaGolpe;
+            jugador->distanciaRecorrida = ((duracionJuegoEnMinutos * 60) * jugador->alturaMaximaDeLaPelota) / (60.0 / jugador->golpesPorMinuto);
+            break;
+        case 2: // Acuna
+            jugador->alturaMaximaDeLaPelota = alturaTotalAcunaMetros[juegoIndex];
+            jugador->velocidadInicial = calculaVelDesdeAltura(jugador->alturaMaximaDeLaPelota);
+            jugador->alturaGolpe = (jugador->alturaMaximaDeLaPelota > 1.5) ? jugador->estatura * 0.15 : jugador->estatura * 0.1;
+            jugador->golpesPorMinuto = (duracionJuegoEnMinutos * 60) / (calculaTiempoDesdeVelocidad(jugador->velocidadInicial) * 2);
+            jugador->distanciaRecorrida = ((duracionJuegoEnMinutos * 60) * jugador->alturaMaximaDeLaPelota) / (calculaTiempoDesdeVelocidad(jugador->velocidadInicial) * 2);
+            break;
+    }
+}
 
-                    (juegos + i)->jugadores[j].golpesPorMinuto = (duracionJuegoEnMinutos * 60) / periodosMessiSegundos[i];
-                    //Ej. juego 1 para distancia total: Si la pelota recorre 3.01 m cada 1.5 seg -> en 180 seg ¿cuanta distancia recorre?
-                    (juegos + i)->jugadores[j].distanciaRecorrida = ((duracionJuegoEnMinutos * 60) * (juegos + i)->jugadores[j].alturaMaximaDeLaPelota) / periodosMessiSegundos[i];
-                    break;
-                case 1:
-                //DiMaria. Nos dicen que patea x veces por minuto la pelota.
-                    (juegos + i)->jugadores[j].golpesPorMinuto = frecuenciasDiMariaMinuto[i];
-                    const float periodoDiMariaSegundos = 60 / (juegos + i)->jugadores[j].golpesPorMinuto;
-
-                    (juegos + i)->jugadores[j].velocidadInicial = calculaVelDesdePeriodo(periodoDiMariaSegundos);
-                    float alturaTempDiMaria = calculaAlturaDesdeVelocidad((juegos + i)->jugadores[j].velocidadInicial);
-                    if(alturaTempDiMaria > 1.5)
-                    {
-                        (juegos + i)->jugadores[j].alturaGolpe = (juegos + i)->jugadores[j].estatura * 0.15;
-                        (juegos + i)->jugadores[j].alturaMaximaDeLaPelota = alturaTempDiMaria + (juegos + i)->jugadores[j].alturaGolpe;
-                    }
-                    else
-                    {
-                        (juegos + i)->jugadores[j].alturaGolpe = (juegos + i)->jugadores[j].estatura * 0.1;
-                        (juegos + i)->jugadores[j].alturaMaximaDeLaPelota = alturaTempDiMaria + (juegos + i)->jugadores[j].alturaGolpe;
-                    }
-                    (juegos + i)->jugadores[j].distanciaRecorrida = ((duracionJuegoEnMinutos * 60) * (juegos + i)->jugadores[j].alturaMaximaDeLaPelota) / periodoDiMariaSegundos;
-                    break;
-                case 2:
-                    //Acuna. Nos dicen que la pelota llega a x altura total
-                    (juegos + i)->jugadores[j].alturaMaximaDeLaPelota = alturaTotalAcunaMetros[i];
-                    (juegos + i)->jugadores[j].velocidadInicial = calculaVelDesdeAltura((juegos + i)->jugadores[j].alturaMaximaDeLaPelota);
-                    const float tiempoAcuna = calculaTiempoDesdeVelocidad((juegos + i)->jugadores[j].velocidadInicial) * 2;
-                    float alturaTempAcuna = calculaAlturaDesdeVelocidad((juegos + i)->jugadores[j].velocidadInicial);
-                    if(alturaTempAcuna > 1.5)
-                    {
-                        (juegos + i)->jugadores[j].alturaGolpe = (juegos + i)->jugadores[j].estatura * 0.15;
-                    }
-                    else
-                    {
-                        (juegos + i)->jugadores[j].alturaGolpe = (juegos + i)->jugadores[j].estatura * 0.1;
-                    }
-                    (juegos + i)->jugadores[j].golpesPorMinuto = (duracionJuegoEnMinutos * 60) / tiempoAcuna;
-                    (juegos + i)->jugadores[j].distanciaRecorrida = ((duracionJuegoEnMinutos * 60) * (juegos + i)->jugadores[j].alturaMaximaDeLaPelota) / tiempoAcuna;
-                    break;
-            }
+void solucionTP(t_juego* juegos)
+{
+    for (int i = 0; i < CANT_JUEGOS; i++)
+    {
+        for (int j = 0; j < CANT_JUGADORES; j++)
+        {
+            calcularDatosJugador(&(juegos + i)->jugadores[j], i, j);
         }
         calculaCantAlineamientos(juegos + i);
     }
