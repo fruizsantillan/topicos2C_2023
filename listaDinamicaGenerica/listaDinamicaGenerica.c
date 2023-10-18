@@ -47,7 +47,10 @@ void listaRecorrer(const Lista* pl, Accion accion, void* extra)
     }
 }
 
-void listaVaciar(Lista* pl);
+void listaVaciar(Lista* pl)
+{
+    pl->ce = 0;
+}
 
 //Ordenar Lista Ascendente
 void listaOrdenarAsc(Lista* pl, int metodo, Cmp cmp)
@@ -173,7 +176,7 @@ void listaOrdenarDescInsercion(Lista* pl, Cmp cmp)
 }
 
 //Insertar en Lista
-int listaInsertarEnOrdAsc(Lista* pl, int elem)
+int listaInsertarEnOrdAsc(Lista* pl, void* elem, Cmp cmp)
 {
     if(pl->ce == pl->cap)
     {
@@ -187,19 +190,19 @@ int listaInsertarEnOrdAsc(Lista* pl, int elem)
         pl->cap = nuevaCap;
     }
 
-    int* i = pl->vec;
-    int* ult = pl-> vec + pl->ce - 1;
+    void* i = pl->vec;
+    void* ult = pl->vec + (pl->ce - 1) * pl->tamElem;
 
-    while(i <= ult && elem > *i)
-        i++;
+    while(i <= ult && cmp(elem, i) > 0)
+        i += pl->tamElem;
 
-    if(i <= ult && elem == *i)
+    if(cmp(i, ult) <= 0 && cmp(elem, i) == 0)
         return DUPLICADO;
 
-    for(int* j = ult; j >= i; j--)
-        *(j + 1) = *j;
+    for(void* j = ult; j >= i; j -= pl->tamElem)
+        memcpy(j + pl->tamElem, j, pl->tamElem);
 
-    *i = elem;
+    memcpy(i, elem, pl->tamElem);
 
     pl->ce++;
 
