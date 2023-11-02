@@ -1,6 +1,6 @@
 #include "funciones.h"
 
-/* aqu� deben declarar sus funciones */
+/* aquï¿½ deben declarar sus funciones */
 float calculaVelDesdePeriodo(const float periodo)
 {
     return GRAVEDAD * (periodo / 2);
@@ -26,14 +26,15 @@ float calculaPendiente(const t_coordenada* coordenada1, const t_coordenada* coor
     return (coordenada2->y - coordenada1->y)/(coordenada2->x - coordenada1->x);
 }
 
-double milisegASeg(double miliseg)
+double milisegASeg(int miliseg)
 {
-    return miliseg / 1000.0;
+    miliseg  %= (60 * 1000);
+    return miliseg / 1000;
 }
 
 double milisegAMin(double miliseg)
 {
-    return miliseg / 60000.0;
+    return miliseg / (60 * 1000);
 }
 
 float calcularDistanciaRecorrida(float duracionJuegoEnMinutos, float velocidadInicial, float alturaMaximaDeLaPelota, float periodo)
@@ -41,82 +42,122 @@ float calcularDistanciaRecorrida(float duracionJuegoEnMinutos, float velocidadIn
     return ((duracionJuegoEnMinutos * 60) * alturaMaximaDeLaPelota) / periodo;
 }
 
-double calcularAltura(double velocidad, double tiempo, float alturaGolpe)
+double calculaAlturaDesdeTiempo(double velocidad, double tiempo)
 {
-    return (velocidad * tiempo - 0.5 * GRAVEDAD * pow(tiempo, 2)) + alturaGolpe;
+    return velocidad * tiempo + 0.5 * GRAVEDAD * pow(tiempo, 2);
+}
+
+float calculaPosicionAlineamiento(float* trayectoriaPelota, float* tiempoAAlturaMaxima, float* tiempoTemp, float* velocidadInicial, float* alturaGolpe)
+{
+    if(*trayectoriaPelota)
+    {
+        if(*tiempoTemp >= *tiempoAAlturaMaxima)
+        {
+            *trayectoriaPelota = FALSE;
+            *tiempoTemp = *tiempoAAlturaMaxima;
+        }
+    } else
+    {
+        if(*tiempoTemp <= 0)
+        {
+            *trayectoriaPelota = TRUE;
+            *tiempoTemp = 0;
+        }
+    }
+
+    if(*trayectoriaPelota)
+        *tiempoTemp += 0.001;
+    else
+        *tiempoTemp -= 0.001;
+
+    return (calculaAlturaDesdeTiempo(*velocidadInicial, *tiempoTemp) + *(alturaGolpe));
 }
 
 void calculaCantAlineamientos(t_juego* juegos)
 {
+    bool trayectoriaPelota[CANT_JUGADORES]; //TRUE -> Subiendo : FALSE -> Bajando
+    bool flagAlineacion = FALSE;
     t_coordenada coordenadas[CANT_JUGADORES];
-    int duracionAlineamiento = 0;
-    t_instante instanteAlineamiento;
-    int cantAlineamientos = 0;
+    float tiempoAAlturaMaxima[CANT_JUGADORES];
+    float tiempoTemp[CANT_JUGADORES];
 
-    for (int i = 0; i < CANT_JUGADORES; i++)
-        coordenadas[i].x = juegos->jugadores[i].posicion;
-
-    float pendienteAB = 0.0; // Inicializa la pendiente
-    float pendienteBC = 0.0;
-
-    for (int j = 0; j < CANT_MILISEG; j++)
+    for(int i = 0; i < CANT_JUGADORES; i++)
     {
-        for (int k = 0; k < CANT_JUGADORES; k++)
+        coordenadas[i].x = juegos->jugadores[i].posicion;
+        coordenadas[i].y = juegos->jugadores[i].alturaGolpe;
+        trayectoriaPelota[i] = TRUE;
+        tiempoAAlturaMaxima[i] = calculaTiempoDesdeVelocidad(juegos->jugadores[i].velocidadInicial);
+        tiempoTemp[i] = 0;
+    }
+
+    bool esAlineamiento = FALSE;
+    juegos->cantidadAlineamientos = 0;
+    juegos->alineamientos->duracion = 0;
+
+    for(int j = 1; j < CANT_MILISEG; j++)
+    {
+        for(int k = 0; k < CANT_JUGADORES; k++)
         {
-            const float tiempoGolpe = juegos->jugadores[k].velocidadInicial / GRAVEDAD * 2;
-            // Actualiza la altura de la pelota
-            coordenadas[k].y = calcularAltura(juegos->jugadores[k].velocidadInicial, milisegASeg(j), juegos->jugadores[k].alturaGolpe);
+            coordenadas[k].y = calculaPosicionAlineamiento(&trayectoriaPelota[k], &tiempoAAlturaMaxima[k], &tiempoTemp[k], &juegos->jugadores[k].velocidadInicial, &juegos->jugadores[k].alturaGolpe);
         }
 
-        if (duracionAlineamiento == 0)
-        {
-            pendienteAB = calculaPendiente(&coordenadas[0], &coordenadas[1]);
-            pendienteBC = calculaPendiente(&coordenadas[1], &coordenadas[2]);
-        }
+        float pendienteAB = fabs(calculaPendiente(&coordenadas[0], &coordenadas[1]));
+        float pendienteBC = fabs(calculaPendiente(&coordenadas[1], &coordenadas[2]));
 
-        if (fabs(pendienteAB - pendienteBC) < DELTA)
-        {
-            if (duracionAlineamiento == 0)
-            {
-                instanteAlineamiento.milisegundo = j;
-                instanteAlineamiento.segundo = milisegASeg(j);
-                instanteAlineamiento.minuto = milisegAMin(j);
-
-                juegos->alineamientos[cantAlineamientos].instanteInicial = instanteAlineamiento;
-                juegos->alineamientos[cantAlineamientos].pendiente = (pendienteAB + pendienteBC) / 2;
-                juegos->alineamientos[cantAlineamientos].pos1 = coordenadas[0];
-                juegos->alineamientos[cantAlineamientos].pos2 = coordenadas[1];
-                juegos->alineamientos[cantAlineamientos].pos3 = coordenadas[2];
-
-                cantAlineamientos++;
-                duracionAlineamiento = 1; // Inicializa la duración del alineamiento actual
-            }
-            else
-            {
-                duracionAlineamiento++; // Incrementa la duración del alineamiento actual
-            }
-        }
+        if(pendienteAB - pendienteBC < DELTA)
+            esAlineamiento = TRUE;
         else
+            esAlineamiento = FALSE;
+
+        if(esAlineamiento && !flagAlineacion)
         {
-            duracionAlineamiento = 0; // Reinicia la duración si no hay alineamiento
+            flagAlineacion = TRUE;
+            juegos->alineamientos->duracion++;
+
+            juegos->alineamientos->instanteInicial.minuto= milisegAMin(j);
+            juegos->alineamientos->instanteInicial.segundo = milisegASeg(j);
+            juegos->alineamientos->instanteInicial.milisegundo = j % 1000;
+
+            for(int l = 0; l < CANT_JUGADORES; l++)
+            {
+                juegos->alineamientos[juegos->cantidadAlineamientos].pos1.x = coordenadas[l].x;
+                juegos->alineamientos[juegos->cantidadAlineamientos].pos1.x = coordenadas[l].y;
+            }
+            juegos->alineamientos[juegos->cantidadAlineamientos].pendiente = (pendienteAB + pendienteBC) / 2;
+        }
+
+        if(flagAlineacion && !esAlineamiento)
+        {
+            juegos->alineamientos[juegos->cantidadAlineamientos].duracion = juegos->alineamientos->duracion;
+            juegos->alineamientos->duracion = 0;
+            juegos->cantidadAlineamientos++;
+            flagAlineacion = FALSE;
+        }
+
+        if(flagAlineacion && esAlineamiento)
+        {
+            juegos->alineamientos->duracion++;
         }
     }
-    juegos->cantidadAlineamientos = cantAlineamientos;
+
 }
 
 char obtenerValorPorTeclado(const char *opcionesValidas, const char* primerMensaje, const char* segundoMensaje)
 {
-    /* Aqu� deben hacer todas las validaciones necesarias para que el reporte extendido se muestre a pedido del usuario */
-    char teclaIngresada;
+    /* Aquï¿½ deben hacer todas las validaciones necesarias para que el reporte extendido se muestre a pedido del usuario */
+    char teclaIngresada='n';
 
-    printf(primerMensaje);
-    scanf("%c", &teclaIngresada);
-    fflush(stdin);
-    while(teclaIngresada != opcionesValidas[0] && teclaIngresada != opcionesValidas[1])
+    printf("%s\n",primerMensaje);
+    scanf("%s", &teclaIngresada);
+
+    char* esLetraValida = strstr(opcionesValidas, &teclaIngresada);
+
+    while(!esLetraValida)
     {
-        printf(segundoMensaje);
-        scanf("%c", &teclaIngresada);
-        fflush(stdin);
+        printf("%s\n", segundoMensaje);
+        printf("%s\n", primerMensaje);
+        scanf("%s", &teclaIngresada);
+        esLetraValida = strstr(opcionesValidas, &teclaIngresada);
     }
 
     return teclaIngresada;
@@ -127,7 +168,7 @@ void calcularDatosJugador(t_jugador *jugador, int juegoIndex, int jugadorIndex)
     //Datos brindados por el enunciado.
     const float periodosMessiSegundos[CANT_JUEGOS] = {1.5, 3.0, 5.0};
     const float alturaTotalAcunaMetros[CANT_JUEGOS] = {3.0, 11.11, 14.14};
-    const int frecuenciasDiMariaMinuto[CANT_JUEGOS] = {10, 15, 30};
+    const float frecuenciasDiMariaMinuto[CANT_JUEGOS] = {10.0, 15.0, 30.0};
 
     switch (jugadorIndex)
     {
@@ -167,5 +208,5 @@ void solucionTP(t_juego* juegos)
         }
         calculaCantAlineamientos(juegos + i);
     }
-  /* Aqu� deben estar los llamados a las funciones creadas por ustedes */
+  /* Aquï¿½ deben estar los llamados a las funciones creadas por ustedes */
 }
