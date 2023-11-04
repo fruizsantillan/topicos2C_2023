@@ -1,0 +1,12 @@
+ARCHIVOS DE TEXTO
+
+2 TIPOS:
+    - Longitud fija ->      00755331Perez, Juan_____M1207199900100000.00\n
+    - Longitud variable ->  7555331|Perez, Juan|M|12/07/1999|100000.00\n
+
+El caracter nulo NO EXISTE EN LOS ARCHIVOS DE TEXTO
+
+Para escribir en un archivo: fprintf()
+
+Ejemplo:
+    fprintf("%d|%s|%c|%d/%d%d|%.2f\n", )
