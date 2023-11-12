@@ -2,22 +2,22 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="archivoTxt-ConversionBinTxt" />
+		<Option title="mergeArchivos" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/archivoTxt-ConversionBinTxt" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/mergeArchivos" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="empleados.bin empleados.txt V" />
+				<Option parameters="productos.bin movimientos.bin" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/archivoTxt-ConversionBinTxt" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Release/mergeArchivos" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -32,13 +32,11 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="funciones.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="funciones.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Extensions />
+		<Extensions>
+			<lib_finder disable_auto="1" />
+		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

@@ -43,7 +43,6 @@ void listaRecorrer(const Lista* pl, Accion accion, void* extra)
     for(void* i = pl->vec; i <= ult; i += pl->tamElem)
     {
         accion(i, extra);
-
     }
 }
 
@@ -259,7 +258,7 @@ bool listaEliminarOrd(Lista* pl, void* elem, Cmp cmp)
     return true;
 }
 
-bool listaBuscar(const Lista* pl, int elem);
+bool listaBuscar(const Lista* pl, void* elem, Cmp cmp);
 
 //Extras
 void intercambiar(void* a, void* b, size_t tamElem)
@@ -296,4 +295,41 @@ void* buscarMayor(const void* ini, const void* fin, size_t tamElem, Cmp cmp)
     }
 
     return (void*)m;
+}
+
+void generarIndice(const char* nomProds, const char* nomIdx)
+{
+    Lista lIndProd;
+    listaCrear(&lIndProd, sizeof(IndProd));
+
+    FILE* archProds = fopen(nomProds, "rb");
+
+    if(!archProds)
+    {
+        printf("ERROR. No se pudo abrir el archivo");
+        return ERR_ARCHIVO;
+    }
+
+    int contReg = 0;
+    Producto prod;
+    IndProd IndProd;
+    fread(&prod, sizeof(Producto), 1, archProds);
+    while(!feof(archProds))
+    {
+        strcpy(IndProd.codigo, prod.codigo);
+        IndProd.nroReg = contReg;
+        listaInsertarEnOrdAsc(&lIndProd, &IndProd, cmpIndProd);
+        contReg++;
+        fread(&pord, sizeof(Producto), 1, archProds);
+    }
+
+    listaGrabarEnArchivo(&lIndProd, nomIdx);
+}
+
+int cmpIndProd(const void* a, const void* b)
+{
+    IndProd* indProdA = (IndProd*)a;
+    IndProd* indProdB = (IndProd*)b;
+
+    return strcmp(indProdA->codigo, indProdB->codigo);
 }

@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 #define TODO_OK 0
 #define ERR_ARCH 1
@@ -12,6 +13,8 @@
 
 #define TAM_APYN 50
 #define TAM_LINEA 1000
+
+#define CANT_EMPLEADOS 10
 
 typedef struct
 {
@@ -44,5 +47,8 @@ int empleadoTxtVABin(char* linea, void* registro, bool* errorFatal);
 int empleadoTxtFABin(char* linea, void* registro, bool* errorFatal);
 int archivoTxtABin(const char* nombreTxt, const char* nombreBin, TxtABin txtABin, size_t tamReg);
 
-
+//Prueba para crear archivos
+int crearArchivoBinEmpleados(const char* nombreBin);
+int crearArchivoTxtEmpleadosVariable(const char* nombreTxt);
+int leerArchivoBinarioEmpleados(const char* nombreBin);
 #endif // FUNCIONES_H_INCLUDED

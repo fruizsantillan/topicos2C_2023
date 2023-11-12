@@ -10,6 +10,7 @@
 #define TODO_OK 0
 #define SIN_MEM 1
 #define DUPLICADO 2
+#define ERR_ARCHIVO 3
 
 #define BURBUJEO 1
 #define SELECCION 2
@@ -23,6 +24,12 @@ typedef struct {
     size_t cap;
     size_t tamElem;
 } Lista;
+
+typedef struct {
+    char codigo[11];
+    unsigned nroReg;
+}
+IndProd;
 
 //Funciones como parametros
 typedef int (*Cmp)(const void*, const void*);
@@ -55,10 +62,16 @@ int listaInsertarEnPos(Lista* pl, int elem, int pos);
 
 //Eliminar y buscar
 bool listaEliminarOrd(Lista* pl, void* elem, Cmp cmp);
-bool listaBuscar(const Lista* pl, int elem);
+bool listaBuscar(const Lista* pl, void* elem, Cmp cmp);
 
 //Extras
 void intercambiar(void* a, void* b, size_t tamElem);
 void* buscarMenor(const void* ini, const void* fin, size_t tamElem, Cmp cmp);
 void* buscarMayor(const void* ini, const void* fin, size_t tamElem, Cmp cmp);
+
+//Archivos
+bool listaCrearDesdeArchivo(Lista* pl, const char nomArchivo, size_t tamElem);
+
+//Indices
+
 #endif // LISTADINAMICAGENERICA_H_INCLUDED
