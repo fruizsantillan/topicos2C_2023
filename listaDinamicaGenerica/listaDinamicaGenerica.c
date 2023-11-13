@@ -208,7 +208,28 @@ int listaInsertarEnOrdAsc(Lista* pl, void* elem, Cmp cmp)
     return TODO_OK;
 }
 
-int listaInsertarAlInicio(Lista* pl, int elem);
+int listaInsertarAlInicio(Lista* pl, const void* elem)
+{
+    if(pl->ce == pl->cap)
+    {
+        size_t nuevaCap = pl->cap * 2;
+        void* nuevoVec = realloc(pl->vec, nuevaCap * pl->tamElem);
+
+        if(!nuevoVec)
+            return SIN_MEM;
+
+        pl->vec = nuevoVec;
+        pl->cap = nuevaCap;
+    }
+
+    for(void* i = pl->vec + pl->ce * pl->tamElem; i > pl->vec; i -= pl->tamElem)
+        memcpy(i, i - pl->tamElem, pl->tamElem);
+
+    memcpy(pl->vec, elem, pl->tamElem);
+    pl->ce++;
+
+    return TODO_OK;
+}
 
 int listaInsertarAlFinal(Lista* pl, const void* elem)
 {
@@ -263,12 +284,12 @@ bool listaBuscar(const Lista* pl, void* elem, Cmp cmp);
 //Extras
 void intercambiar(void* a, void* b, size_t tamElem)
 {
-    //void* aTemp = malloc(tamElem);
-    char aTemp[tamElem];
+    void* aTemp = malloc(tamElem);
+    //char aTemp[tamElem];
     memcpy(aTemp, a, tamElem);  //*aTemp = *a;
     memcpy(a, b, tamElem);      //*a = *b;
     memcpy(b, aTemp, tamElem);  //*b = *aTemp;
-    //free(aTemp);
+    free(aTemp);
 }
 
 void* buscarMenor(const void* ini, const void* fin, size_t tamElem, Cmp cmp)
@@ -295,35 +316,6 @@ void* buscarMayor(const void* ini, const void* fin, size_t tamElem, Cmp cmp)
     }
 
     return (void*)m;
-}
-
-void generarIndice(const char* nomProds, const char* nomIdx)
-{
-    Lista lIndProd;
-    listaCrear(&lIndProd, sizeof(IndProd));
-
-    FILE* archProds = fopen(nomProds, "rb");
-
-    if(!archProds)
-    {
-        printf("ERROR. No se pudo abrir el archivo");
-        return ERR_ARCHIVO;
-    }
-
-    int contReg = 0;
-    Producto prod;
-    IndProd IndProd;
-    fread(&prod, sizeof(Producto), 1, archProds);
-    while(!feof(archProds))
-    {
-        strcpy(IndProd.codigo, prod.codigo);
-        IndProd.nroReg = contReg;
-        listaInsertarEnOrdAsc(&lIndProd, &IndProd, cmpIndProd);
-        contReg++;
-        fread(&pord, sizeof(Producto), 1, archProds);
-    }
-
-    listaGrabarEnArchivo(&lIndProd, nomIdx);
 }
 
 int cmpIndProd(const void* a, const void* b)

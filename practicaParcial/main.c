@@ -3,15 +3,20 @@
 int main()
 {
     //Genero archivos para probar
-    generarProductos("productos.bin");
-    generarMovimientos("movimientos.bin");
+    const char nomProd[] = "productos.bin";
+    const char nomMovs[] = "movimientos.txt";
+    const char nomIndex[] = "productos.idx";
 
+    generarProductos(nomProd);
+    generarMovimientos(nomMovs);
+
+    mostrarProductos(nomProd);
     Lista lista;
     //crear lista
     listaCrear(&lista, sizeof(int));
 
     //crear indice
-    generarIndice("productos.bin", "productos.idx");
+    generarIndice(nomProd, nomIndex);
 
     //mergear productos
 

@@ -56,7 +56,7 @@ void listaOrdenarDescInsercion(Lista* pl, Cmp cmp);
 
 //Insertar en Lista
 int listaInsertarEnOrdAsc(Lista* pl, void* elem, Cmp cmp);
-int listaInsertarAlInicio(Lista* pl, int elem);
+int listaInsertarAlInicio(Lista* pl, const void* elem);
 int listaInsertarAlFinal(Lista* pl, const void* elem);
 int listaInsertarEnPos(Lista* pl, int elem, int pos);
 

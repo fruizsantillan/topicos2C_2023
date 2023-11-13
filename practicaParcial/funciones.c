@@ -10,6 +10,7 @@ bool listaCrear(Lista* pl, size_t tamElem)
 
     if(!pl->vec)
     {
+        printf("ERROR. No se pudo reservar la memoria\n");
         return false;
     }
 
@@ -25,6 +26,59 @@ void listaDestruir(Lista* pl)
     free(pl->vec);
 }
 
+void listaVaciar(Lista* pl)
+{
+    pl->ce = 0;
+}
+
+int listaInsertarAlFinal(Lista* pl, void* elem)
+{
+    if(pl->ce == pl->cap)
+    {
+        size_t nuevaCap = pl->cap * 2;
+        void* nuevoVec = realloc(pl->vec, nuevaCap * pl->tamElem);
+
+        if(!nuevoVec)
+        {
+            printf("ERROR. No se pudo reallocar la memoria\n");
+            return ERR_ARCHIVO;
+        }
+
+        pl->vec = nuevoVec;
+        pl->cap = nuevaCap;
+    }
+
+    memcpy(pl->vec + pl->ce * pl->tamElem, elem, pl->tamElem);
+    pl->ce++;
+    return TODO_OK;
+}
+
+int listaInsertarAlInicio(Lista* pl, void* elem)
+{
+    if(pl->ce == pl->cap)
+    {
+        size_t nuevaCap = pl->cap * 2;
+        void* nuevoVec = realloc(pl->vec, nuevaCap * pl->tamElem);
+
+        if(!nuevoVec)
+        {
+            printf("ERROR. No se pudo reallocar la memoria\n");
+            return ERR_ARCHIVO;
+        }
+
+        pl->vec = nuevoVec;
+        pl->cap = nuevaCap;
+    }
+
+    for(void* i = pl->vec + pl->ce * pl->tamElem; i > pl->vec; i -= pl->tamElem)
+        memcpy(i, i - pl->tamElem, pl->tamElem);
+
+    memcpy(pl->vec, elem, pl->tamElem);
+    pl->ce++;
+
+    return TODO_OK;
+}
+
 int listaInsertarEnOrdAsc(Lista* pl, void* elem, Cmp cmp)
 {
     if(pl->ce == pl->cap)
@@ -33,7 +87,10 @@ int listaInsertarEnOrdAsc(Lista* pl, void* elem, Cmp cmp)
         void* nuevoVec = realloc(pl->vec, nuevaCap * pl->tamElem);
 
         if(!nuevoVec)
-            return SIN_MEM;
+        {
+            printf("ERROR. No se pudo reallocar la memoria\n");
+            return ERR_ARCHIVO;
+        }
 
         pl->vec = nuevoVec;
         pl->cap = nuevaCap;
@@ -42,37 +99,21 @@ int listaInsertarEnOrdAsc(Lista* pl, void* elem, Cmp cmp)
     void* i = pl->vec;
     void* ult = pl->vec + (pl->ce - 1) * pl->tamElem;
 
-    while(i <= ult && cmp(elem, i) > 0)
+    //Encontrar la posicion
+    while(i <= ult && cmp(i, elem) < 0)
         i += pl->tamElem;
-
-    if(cmp(i, ult) <= 0 && cmp(elem, i) == 0)
+    //Validar duplicados
+    if(cmp(i, ult) <= 0 && cmp(i, elem) == 0)
         return DUPLICADO;
-
+    //Desplazar
     for(void* j = ult; j >= i; j -= pl->tamElem)
         memcpy(j + pl->tamElem, j, pl->tamElem);
-
+    //Insertar
     memcpy(i, elem, pl->tamElem);
-
+    //Aumentar cantidad elem
     pl->ce++;
 
     return TODO_OK;
-}
-
-bool listaGrabarEnArchivo(Lista* pl, const void* nomArchivo)
-{
-    FILE* arch = fopen(nomArchivo, "wb");
-
-    if(!arch)
-    {
-        printf("ERROR. No se pudo grabar el archivo\n");
-        return false;
-    }
-
-    fwrite(pl->vec, sizeof(pl->tamElem), sizeof(pl->ce), arch);
-
-    fclose(arch);
-
-    return true;
 }
 
 //**************************************************************
@@ -160,6 +201,30 @@ void generarIndice(const char* nomProds, const char* nomIdx)
     listaGrabarEnArchivo(&listaIndProd, nomIdx);
     fclose(archProds);
     listaDestruir(&listaIndProd);
+}
+
+int mostrarProductos(const char* nomProds)
+{
+    FILE* archProds = fopen(nomProds, "rb");
+
+    if(archProds == NULL)
+    {
+        printf("No se pudo abrir el archivo de productos\n");
+        return ERR_ARCHIVO;
+    }
+
+    Producto prod;
+
+    fread(&prod, sizeof(Producto), 1, archProds);
+    while(!feof(archProds))
+    {
+        printf("%2s - %10s - %5f - %3d\n", prod.codigo, prod.descripcion, prod.precio, prod.stock);
+        fread(&prod, sizeof(Producto), 1, archProds);
+    }
+
+    fclose(archProds);
+
+    return TODO_OK;
 }
 
 //**************************************************************

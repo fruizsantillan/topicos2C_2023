@@ -8,6 +8,7 @@
 
 #define SIN_MEM 1
 #define DUPLICADO 2
+#define ERR_ARCHIVO 3
 #define TODO_OK 0
 
 #define CANT_PRODS 5
@@ -59,12 +60,14 @@ void listaDestruir(Lista* pl);
 bool listaCrearDeArchivo(Lista* pl, const char* nomArchivo, size_t tamElem);
 int listaInsertarEnOrdAsc(Lista* pl, void* elem, Cmp cmp);
 bool listaGrabarEnArchivo(Lista* pl, const void* nomArchivo);
+
 //**************************************************************
 //                  Funciones de archivos
 //**************************************************************
 void generarProductos(const char* nomArchivo);
 void generarMovimientos(const char* nomArchivo);
 void generarIndice(const char* nomProds, const char* nomIdx);
+int mostrarProductos(const char* nomProds);
 
 //**************************************************************
 //                  Funciones de comparacion

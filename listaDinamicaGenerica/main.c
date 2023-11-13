@@ -26,6 +26,13 @@ int main()
     puts("Lista original:");
     listaRecorrer(&pl, mostrarInt, NULL);
 
+    puts("\n\nInserto al principio:");
+    elem = 193;
+    listaInsertarAlInicio(&pl, &elem);
+    elem = 39;
+    listaInsertarAlInicio(&pl, &elem);
+    listaRecorrer(&pl, mostrarInt, NULL);
+
     puts("\n\nLista ordenada:");
     listaOrdenarAsc(&pl, SELECCION, cmpInt);
     listaRecorrer(&pl, mostrarInt, NULL);

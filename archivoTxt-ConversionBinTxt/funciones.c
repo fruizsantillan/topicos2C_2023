@@ -218,7 +218,6 @@ int crearArchivoTxtEmpleadosVariable(const char* nombreTxt)
 {
     FILE* archivoTxt = fopen(nombreTxt, "wt");
 
-
     if(!archivoTxt)
     {
         printf("ERROR. No se pudo crear el archivo de empleados");
