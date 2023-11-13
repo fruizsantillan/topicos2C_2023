@@ -5,14 +5,16 @@ int main()
     //Genero archivos para probar
     generarProductos("productos.bin");
     generarMovimientos("movimientos.bin");
-    generarIndice("productos.bin", "productos.idx");
 
     Lista lista;
     //crear lista
     listaCrear(&lista, sizeof(int));
 
-    //crear indice?
+    //crear indice
+    generarIndice("productos.bin", "productos.idx");
+
     //mergear productos
+
     //actualizar precios
 
     return 0;

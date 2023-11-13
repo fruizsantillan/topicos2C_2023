@@ -1,5 +1,9 @@
 #include "funciones.h"
 
+//**************************************************************
+//                  Funciones de Lista
+//**************************************************************
+
 bool listaCrear(Lista* pl, size_t tamElem)
 {
     pl->vec = malloc(8 * tamElem);
@@ -16,7 +20,64 @@ bool listaCrear(Lista* pl, size_t tamElem)
     return true;
 }
 
-//*****************************************
+void listaDestruir(Lista* pl)
+{
+    free(pl->vec);
+}
+
+int listaInsertarEnOrdAsc(Lista* pl, void* elem, Cmp cmp)
+{
+    if(pl->ce == pl->cap)
+    {
+        size_t nuevaCap = pl->cap * 2;
+        void* nuevoVec = realloc(pl->vec, nuevaCap * pl->tamElem);
+
+        if(!nuevoVec)
+            return SIN_MEM;
+
+        pl->vec = nuevoVec;
+        pl->cap = nuevaCap;
+    }
+
+    void* i = pl->vec;
+    void* ult = pl->vec + (pl->ce - 1) * pl->tamElem;
+
+    while(i <= ult && cmp(elem, i) > 0)
+        i += pl->tamElem;
+
+    if(cmp(i, ult) <= 0 && cmp(elem, i) == 0)
+        return DUPLICADO;
+
+    for(void* j = ult; j >= i; j -= pl->tamElem)
+        memcpy(j + pl->tamElem, j, pl->tamElem);
+
+    memcpy(i, elem, pl->tamElem);
+
+    pl->ce++;
+
+    return TODO_OK;
+}
+
+bool listaGrabarEnArchivo(Lista* pl, const void* nomArchivo)
+{
+    FILE* arch = fopen(nomArchivo, "wb");
+
+    if(!arch)
+    {
+        printf("ERROR. No se pudo grabar el archivo\n");
+        return false;
+    }
+
+    fwrite(pl->vec, sizeof(pl->tamElem), sizeof(pl->ce), arch);
+
+    fclose(arch);
+
+    return true;
+}
+
+//**************************************************************
+//                  Funciones de archivos
+//**************************************************************
 
 void generarProductos(const char* nomArchivo)
 {
@@ -95,10 +156,15 @@ void generarIndice(const char* nomProds, const char* nomIdx)
         contReg++;
         fread(&prod, sizeof(Producto), 1, archProds);
     }
+
+    listaGrabarEnArchivo(&listaIndProd, nomIdx);
+    fclose(archProds);
+    listaDestruir(&listaIndProd);
 }
 
 //**************************************************************
-//Funciones de comparacion
+//                  Funciones de comparacion
+//**************************************************************
 int cmpIndProd(const void* a, const void* b)
 {
     IndProd* indProdA = (IndProd*)a;

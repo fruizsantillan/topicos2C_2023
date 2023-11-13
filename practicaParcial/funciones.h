@@ -4,10 +4,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
+
+#define SIN_MEM 1
+#define DUPLICADO 2
+#define TODO_OK 0
 
 #define CANT_PRODS 5
 #define CANT_MOVS 8
 
+//**************************************************************
+//                          Estructuras
+//**************************************************************
 typedef struct
 {
     void* vec;
@@ -41,15 +49,26 @@ typedef struct
 }
 IndProd;
 
-bool listaCrear(Lista* pl, size_t tamElem);
-bool listaCrearDeArchivo(Lista* pl, const char* nomArchivo, size_t tamElem);
+typedef int (*Cmp)(const void*, const void*);
 
-//Crear archivos de prueba
+//**************************************************************
+//                  Funciones de lista
+//**************************************************************
+bool listaCrear(Lista* pl, size_t tamElem);
+void listaDestruir(Lista* pl);
+bool listaCrearDeArchivo(Lista* pl, const char* nomArchivo, size_t tamElem);
+int listaInsertarEnOrdAsc(Lista* pl, void* elem, Cmp cmp);
+bool listaGrabarEnArchivo(Lista* pl, const void* nomArchivo);
+//**************************************************************
+//                  Funciones de archivos
+//**************************************************************
 void generarProductos(const char* nomArchivo);
 void generarMovimientos(const char* nomArchivo);
 void generarIndice(const char* nomProds, const char* nomIdx);
 
-//Funciones de comparacion
+//**************************************************************
+//                  Funciones de comparacion
+//**************************************************************
 int cmpIndProd(const void* a, const void* b);
 
 #endif // FUNCIONES_H_INCLUDED
