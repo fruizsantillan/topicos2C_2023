@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1699318958 source:c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\mergearchivos\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+

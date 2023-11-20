@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1699881835 source:c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\listadinamicagenerica\listadinamicagenerica.c
+	"listaDinamicaGenerica.h"
+
+1699881697 c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\listadinamicagenerica\listadinamicagenerica.h
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<string.h>
+	<stdbool.h>
+
+1699884030 source:c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\listadinamicagenerica\main.c
+	"listaDinamicaGenerica.h"
+

@@ -1,0 +1,94 @@
+# depslib dependency file v1.0
+1699924378 source:c:\users\laboratorios\desktop\parcialbibliotecatopicos_entregable\parcialbibliotecatopicos\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"../Cadena/Cadena.h"
+	"../TDALista/TDALista.h"
+	"../SolucionBibliotecaTopicos/SolucionBiblioteca.h"
+
+1699473948 c:\users\laboratorios\desktop\parcialbibliotecatopicos_entregable\cadena\cadena.h
+	<stddef.h>
+	<stdbool.h>
+
+1699473948 c:\users\laboratorios\desktop\parcialbibliotecatopicos_entregable\tdalista\tdalista.h
+	<stdbool.h>
+	"../Comun/Comun.h"
+	"../TDAListaImplDinamicaVec/TDAListaImplDinamicaVec.h"
+	"../TDAListaImplDinamica/TDAListaImplDinamica.h"
+	"../TDAListaImplDinamicaDoble/TDAListaImplDinamicaDoble.h"
+
+1699473948 c:\users\laboratorios\desktop\parcialbibliotecatopicos_entregable\comun\comun.h
+
+1699473948 c:\users\laboratorios\desktop\parcialbibliotecatopicos_entregable\tdalistaimpldinamicavec\tdalistaimpldinamicavec.h
+	<stddef.h>
+
+1699473948 c:\users\laboratorios\desktop\parcialbibliotecatopicos_entregable\solucionbibliotecatopicos\solucionbiblioteca.h
+	<stdio.h>
+	"Libro.h"
+	"../TDALista/TDALista.h"
+
+1699473948 c:\users\laboratorios\desktop\parcialbibliotecatopicos_entregable\solucionbibliotecatopicos\libro.h
+
+1699976250 source:c:\users\gonza\desktop\pendrive\unlam\programacion\carpeta 2023\parcialbibliotecatopicos_entregable\parcialbibliotecatopicos\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"../Cadena/Cadena.h"
+	"../TDALista/TDALista.h"
+	"../SolucionBibliotecaTopicos/SolucionBiblioteca.h"
+
+1699455948 c:\users\gonza\desktop\pendrive\unlam\programacion\carpeta 2023\parcialbibliotecatopicos_entregable\cadena\cadena.h
+	<stddef.h>
+	<stdbool.h>
+
+1699455948 c:\users\gonza\desktop\pendrive\unlam\programacion\carpeta 2023\parcialbibliotecatopicos_entregable\tdalista\tdalista.h
+	<stdbool.h>
+	"../Comun/Comun.h"
+	"../TDAListaImplDinamicaVec/TDAListaImplDinamicaVec.h"
+	"../TDAListaImplDinamica/TDAListaImplDinamica.h"
+	"../TDAListaImplDinamicaDoble/TDAListaImplDinamicaDoble.h"
+
+1699455948 c:\users\gonza\desktop\pendrive\unlam\programacion\carpeta 2023\parcialbibliotecatopicos_entregable\comun\comun.h
+
+1699455948 c:\users\gonza\desktop\pendrive\unlam\programacion\carpeta 2023\parcialbibliotecatopicos_entregable\tdalistaimpldinamicavec\tdalistaimpldinamicavec.h
+	<stddef.h>
+
+1699455948 c:\users\gonza\desktop\pendrive\unlam\programacion\carpeta 2023\parcialbibliotecatopicos_entregable\solucionbibliotecatopicos\solucionbiblioteca.h
+	<stdio.h>
+	"Libro.h"
+	"../TDALista/TDALista.h"
+
+1699455948 c:\users\gonza\desktop\pendrive\unlam\programacion\carpeta 2023\parcialbibliotecatopicos_entregable\solucionbibliotecatopicos\libro.h
+
+1700491323 source:c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\parciales\parcialbibliotecatopicos_entregable\parcialbibliotecatopicos\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"../Cadena/Cadena.h"
+	"../TDALista/TDALista.h"
+	"../SolucionBibliotecaTopicos/SolucionBiblioteca.h"
+
+1699455948 c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\parciales\parcialbibliotecatopicos_entregable\cadena\cadena.h
+	<stddef.h>
+	<stdbool.h>
+
+1699455948 c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\parciales\parcialbibliotecatopicos_entregable\tdalista\tdalista.h
+	<stdbool.h>
+	"../Comun/Comun.h"
+	"../TDAListaImplDinamicaVec/TDAListaImplDinamicaVec.h"
+	"../TDAListaImplDinamica/TDAListaImplDinamica.h"
+	"../TDAListaImplDinamicaDoble/TDAListaImplDinamicaDoble.h"
+
+1699455948 c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\parciales\parcialbibliotecatopicos_entregable\comun\comun.h
+
+1699455948 c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\parciales\parcialbibliotecatopicos_entregable\tdalistaimpldinamicavec\tdalistaimpldinamicavec.h
+	<stddef.h>
+
+1699455948 c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\parciales\parcialbibliotecatopicos_entregable\solucionbibliotecatopicos\solucionbiblioteca.h
+	<stdio.h>
+	"Libro.h"
+	"../TDALista/TDALista.h"
+
+1699455948 c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\parciales\parcialbibliotecatopicos_entregable\solucionbibliotecatopicos\libro.h
+

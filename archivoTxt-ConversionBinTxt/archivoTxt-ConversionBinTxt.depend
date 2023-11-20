@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1699893935 source:c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\archivotxt-conversionbintxt\funciones.c
+	"funciones.h"
+
+1699128510 c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\archivotxt-conversionbintxt\funciones.h
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	<string.h>
+
+1699896844 source:c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\archivotxt-conversionbintxt\main.c
+	"funciones.h"
+

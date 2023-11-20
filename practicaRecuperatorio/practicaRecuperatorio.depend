@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1700190366 source:c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\practicarecuperatorio\main.c
+	"funciones.h"
+
+1700190403 c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\practicarecuperatorio\funciones.h
+	<stdio.h>
+	<stdlib.h>
+
+1700190328 source:c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\practicarecuperatorio\funciones.c
+	"funciones.h"
+

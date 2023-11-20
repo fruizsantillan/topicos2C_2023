@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1699314035 source:c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\recursividadindiceiteracionlista\main.c
+	"funciones.h"
+
+1699314037 c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\recursividadindiceiteracionlista\funciones.h
+	<stdio.h>
+	<stdlib.h>
+
+1699314045 source:c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\recursividadindiceiteracionlista\funciones.c
+	"funciones.h"
+

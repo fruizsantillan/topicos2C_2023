@@ -1,0 +1,45 @@
+# depslib dependency file v1.0
+1698985457 source:c:\users\facu-\downloads\tp_20232c_lunes\funciones.c
+	"funciones.h"
+
+1698985556 c:\users\facu-\downloads\tp_20232c_lunes\funciones.h
+	"funciones_enunciado.h"
+	<math.h>
+	"funciones.h"
+
+1694479710 c:\users\facu-\downloads\tp_20232c_lunes\funciones_enunciado.h
+	<string.h>
+	<stdio.h>
+
+1694730660 source:c:\users\facu-\downloads\tp_20232c_lunes\funciones_enunciado.c
+	"funciones_enunciado.h"
+
+1694547132 source:c:\users\facu-\downloads\tp_20232c_lunes\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"funciones.h"
+	"funciones_enunciado.h"
+
+1694730660 source:c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\tp_20232c_lunes\funciones_enunciado.c
+	"funciones_enunciado.h"
+
+1694479710 c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\tp_20232c_lunes\funciones_enunciado.h
+	<string.h>
+	<stdio.h>
+
+1694547132 source:c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\tp_20232c_lunes\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"funciones.h"
+	"funciones_enunciado.h"
+
+1698985556 c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\tp_20232c_lunes\funciones.h
+	"funciones_enunciado.h"
+	<math.h>
+	"funciones.h"
+
+1699187761 source:c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\tp_20232c_lunes\funciones.c
+	"funciones.h"
+

@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1696792250 source:c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\listaestatica\funciones.c
+	"funciones.h"
+
+1696792250 c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\listaestatica\funciones.h
+	<stdio.h>
+	<stdlib.h>
+
+1696792250 source:c:\users\facu-\documents\unlam\ingenieria\plannuevo\2023\topicos2c_2023\listaestatica\main.c
+	"funciones.h"
+

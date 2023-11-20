@@ -1,0 +1,10 @@
+12345678Juan Perez                                        M0101202000002500.50
+23456789Maria Gonzalez                                    F1503201900002800.75
+34567890Carlos Rodriguez                                  M1005202100002200.30
+45678901Laura Lopez                                       F0507202200002900.40
+56789012Pedro Martinez                                    M2009202000002700.60
+67890123Ana Sanchez                                       F0811201800002600.80
+78901234Luis Fernandez                                    M2512201700002400.45
+89012345Elena Torres                                      F1002201900003000.25
+90123456David Ramirez                                     M0504202300003100.70
+12345067Sofia Castro                                      F1506202200002700.55
