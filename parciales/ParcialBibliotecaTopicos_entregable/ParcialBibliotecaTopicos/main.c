@@ -30,8 +30,11 @@
 bool listaCrear_ALU(Lista* pl, size_t tamElem);
 int cargarListaMovimientosLibro_ALU(Lista* plistaMov, const char* nombreArchMov);
 void txtAMovimiento_ALU(MovLibro* movimiento, char* linea);
-int listaInsertarOrdCDup_ALU(Lista* pl, const void* elem, size_t tamElem, Cmp cmp);
+int listaInsertarOrd_ALU(Lista* pl, const void* elem, size_t tamElem, Cmp cmp, Actualizar actualizar);
 int cmpCodLibroMov(const void* a, const void* b);
+void actualizaCantLibro(void* actualizado, void* actualizador);
+
+int actualizarArchivoLibros_ALU(const char* nombreArchivoLibros, const char* nombreArchivoLibrosIndice, Lista* plistaMov);
 /************************************************************************/
 
 int main()
@@ -62,8 +65,8 @@ int main()
 	///La cantidad en el archivo no puede quedar negativa. Si eso sucede, se deberá descartar el movimiento y continuar con el siguiente.
 	///Para acceder a cada registro, debe hacer uso del archivo índice, que tiene cada registro, el código del libro y su ubicación en el archivo(Nro de registro empezando por el 0).
 	///Debe cargar el índice en memoria, para trabajar con él.
-	/// actualizarArchivoLibros_ALU(NOMBRE_ARCH_LIBROS, NOMBRE_ARCH_LIBROS_INDICE, &listaMov);
-	actualizarArchivoLibros(NOMBRE_ARCH_LIBROS, NOMBRE_ARCH_LIBROS_INDICE, &listaMov);
+	actualizarArchivoLibros_ALU(NOMBRE_ARCH_LIBROS, NOMBRE_ARCH_LIBROS_INDICE, &listaMov);
+	///actualizarArchivoLibros(NOMBRE_ARCH_LIBROS, NOMBRE_ARCH_LIBROS_INDICE, &listaMov);
 
 	puts("");
 
@@ -118,11 +121,12 @@ int cargarListaMovimientosLibro_ALU(Lista* plistaMov, const char* nombreArchMov)
     }
 
     MovLibro movimiento;
+    movimiento.cantidad = 0;
 
     while(fgets(linea, plistaMov->tamElem, archMov))
     {
         txtAMovimiento_ALU(&movimiento, linea);
-        listaInsertarOrdCDup_ALU(plistaMov, &movimiento, sizeof(MovLibro), cmpCodLibroMov);
+        listaInsertarOrd(plistaMov, &movimiento, sizeof(MovLibro), cmpCodLibroMov, actualizaCantLibro);
     }
 
     return TODO_OK;
@@ -138,16 +142,20 @@ void txtAMovimiento_ALU(MovLibro* movimiento, char* linea)
     sscanf(act + 1, "%c", tipoMov);
 
     if(*tipoMov == 'D')
-        movimiento->cantidad += 1;
+        movimiento->cantidad = 1;
     else
-        movimiento->cantidad -= 1;
+        movimiento->cantidad = -1;
 
     *act = '\0';
     act = strrchr(linea, '|');
-    strncpy(movimiento->codigoSocio, act + 1, )
+    strncpy(movimiento->codigoSocio, act + 1, 11);
+    movimiento->codigoSocio[11] = '\0';
 
     *act = '\0';
-    strcpy(movimiento->codigoLibro, linea);
+    strncpy(movimiento->codigoLibro, linea, 7);
+    movimiento->codigoLibro[7] = '\0';
+
+    return TODO_OK;
 }
 
 int cmpCodLibroMov(const void* a, const void* b)
@@ -158,39 +166,27 @@ int cmpCodLibroMov(const void* a, const void* b)
     return strcmp(movA->codigoLibro, movB->codigoLibro);
 }
 
-int listaInsertarOrdCDup_ALU(Lista* pl, const void* elem, size_t tamElem, Cmp cmp)
+void actualizaCantLibro(void* actualizado, void* actualizador)
 {
-    if(pl->ce == pl->cap)
-    {
-        size_t nuevaCap = pl->cap * 2;
-        void* nuevoVec = realloc(pl->vec, nuevaCap * pl->tamElem);
+    MovLibro* movLibroOrig = (MovLibro*)actualizado;
+    const MovLibro* nuevoStock = (const MovLibro*)actualizador;
 
-        if(!nuevoVec)
-        {
-            printf("ERROR. No se pudo reallocar la memoria\n");
-            return ERR_ARCHIVO;
-        }
+    movLibroOrig->cantidad += nuevoStock->cantidad;
+}
 
-        pl->vec = nuevoVec;
-        pl->cap = nuevaCap;
-    }
+int actualizarArchivoLibros_ALU(const char* nombreArchivoLibros, const char* nombreArchivoLibrosIndice, Lista* plistaMov)
+{
+    ///Cargar indice en lista
+    Lista indiceLibros;
+    listaCrearDeArchivo(&indiceLibros, nombreArchivoLibrosIndice, sizeof(IndLibro));
 
-    void* i = pl->vec;
-    void* ult = pl->vec + (pl->ce - 1) * pl->tamElem;
+    ///Leer de la lista de movimientos.
+    MovLibro temp;
+    listaIteradorActual()
+    ///Buscar en el indice para encontrar la posicion.
+    ///Ir al registro encontrado y actualizar la cantidad.
+    ///Se debe validar que la cantidad no sea negativa, sino se descarta.
 
-    //Encontrar la posicion
-    while(i <= ult && cmp(i, elem) < 0)
-        i += pl->tamElem;
-    //Validar duplicados
-    if(cmp(i, ult) <= 0 && cmp(i, elem) == 0)
-        return DUPLICADO;
-    //Desplazar
-    for(void* j = ult; j >= i; j -= pl->tamElem)
-        memcpy(j + pl->tamElem, j, pl->tamElem);
-    //Insertar
-    memcpy(i, elem, pl->tamElem);
-    //Aumentar cantidad elem
-    pl->ce++;
 
-    return TODO_OK;
+
 }
