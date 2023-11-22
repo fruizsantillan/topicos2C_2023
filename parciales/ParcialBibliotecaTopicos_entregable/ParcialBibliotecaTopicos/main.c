@@ -177,12 +177,24 @@ void actualizaCantLibro(void* actualizado, void* actualizador)
 int actualizarArchivoLibros_ALU(const char* nombreArchivoLibros, const char* nombreArchivoLibrosIndice, Lista* plistaMov)
 {
     ///Cargar indice en lista
-    Lista indiceLibros;
-    listaCrearDeArchivo(&indiceLibros, nombreArchivoLibrosIndice, sizeof(IndLibro));
+    Lista listaIndiceLibros;
+    listaCrearDeArchivo(&listaIndiceLibros, nombreArchivoLibrosIndice, sizeof(IndLibro));
 
-    ///Leer de la lista de movimientos.
-    MovLibro temp;
-    listaIteradorActual()
+    IndLibro indLibro;
+    IndLibro* pIndLibro;
+
+    ListaIterador iteradorLibros;
+    listaIteradorCrear(&iteradorLibros, &listaIndiceLibros);
+
+    pIndLibro = (IndLibro*)listaIteradorPrimero(&iteradorLibros);
+
+    puts("Indice de libros");
+    while(pIndLibro != NULL)
+    {
+        printf("%s - %d\n", pIndLibro->codigo, pIndLibro->nroReg);
+        pIndLibro = (IndLibro*)listaIteradorSiguiente(&iteradorLibros);
+    }
+
     ///Buscar en el indice para encontrar la posicion.
     ///Ir al registro encontrado y actualizar la cantidad.
     ///Se debe validar que la cantidad no sea negativa, sino se descarta.
