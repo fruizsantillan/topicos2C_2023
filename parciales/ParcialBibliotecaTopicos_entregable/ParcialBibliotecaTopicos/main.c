@@ -31,10 +31,11 @@ bool listaCrear_ALU(Lista* pl, size_t tamElem);
 int cargarListaMovimientosLibro_ALU(Lista* plistaMov, const char* nombreArchMov);
 void txtAMovimiento_ALU(MovLibro* movimiento, char* linea);
 int listaInsertarOrd_ALU(Lista* pl, const void* elem, size_t tamElem, Cmp cmp, Actualizar actualizar);
-int cmpCodLibroMov(const void* a, const void* b);
-void actualizaCantLibro(void* actualizado, void* actualizador);
-
+int cmpCodLibroMov_ALU(const void* a, const void* b);
+void actualizaCantLibro_ALU(void* actualizado, const void* actualizador);
 int actualizarArchivoLibros_ALU(const char* nombreArchivoLibros, const char* nombreArchivoLibrosIndice, Lista* plistaMov);
+int normalizarNombresLibros_ALU(const char* nombreArchivoLibros);
+void normalizar_ALU(const char* cadOri, char* cadDest);
 /************************************************************************/
 
 int main()
@@ -73,8 +74,8 @@ int main()
 	///Debe normalizar los nombres de los libros en el archivo.
 	///Dejando sólo 1 espacio entre palabras, sin espacios ni caracteres antes de la primer palábra y después de la última.
 	///Quedando la primer letra de cada palabra en mayúscula y el resto en minúscula.
-	/// normalizarNombresLibros_ALU(NOMBRE_ARCH_LIBROS);
-	normalizarNombresLibros(NOMBRE_ARCH_LIBROS);
+	normalizarNombresLibros_ALU(NOMBRE_ARCH_LIBROS);
+	///normalizarNombresLibros(NOMBRE_ARCH_LIBROS);
 
 	mostrarLibros(NOMBRE_ARCH_LIBROS);
 
@@ -121,12 +122,11 @@ int cargarListaMovimientosLibro_ALU(Lista* plistaMov, const char* nombreArchMov)
     }
 
     MovLibro movimiento;
-    movimiento.cantidad = 0;
 
     while(fgets(linea, plistaMov->tamElem, archMov))
     {
         txtAMovimiento_ALU(&movimiento, linea);
-        listaInsertarOrd(plistaMov, &movimiento, sizeof(MovLibro), cmpCodLibroMov, actualizaCantLibro);
+        listaInsertarOrd(plistaMov, &movimiento, sizeof(MovLibro), cmpCodLibroMov_ALU, actualizaCantLibro_ALU);
     }
 
     return TODO_OK;
@@ -135,7 +135,7 @@ int cargarListaMovimientosLibro_ALU(Lista* plistaMov, const char* nombreArchMov)
 void txtAMovimiento_ALU(MovLibro* movimiento, char* linea)
 {
     char* act = strchr(linea, '\n');
-    char* tipoMov;
+    char tipoMov[2];
 
     *act = '\0';
     act = strrchr(linea, '|');
@@ -154,11 +154,9 @@ void txtAMovimiento_ALU(MovLibro* movimiento, char* linea)
     *act = '\0';
     strncpy(movimiento->codigoLibro, linea, 7);
     movimiento->codigoLibro[7] = '\0';
-
-    return TODO_OK;
 }
 
-int cmpCodLibroMov(const void* a, const void* b)
+int cmpCodLibroMov_ALU(const void* a, const void* b)
 {
     MovLibro* movA = (MovLibro*)a;
     MovLibro* movB = (MovLibro*)b;
@@ -166,7 +164,7 @@ int cmpCodLibroMov(const void* a, const void* b)
     return strcmp(movA->codigoLibro, movB->codigoLibro);
 }
 
-void actualizaCantLibro(void* actualizado, void* actualizador)
+void actualizaCantLibro_ALU(void* actualizado, const void* actualizador)
 {
     MovLibro* movLibroOrig = (MovLibro*)actualizado;
     const MovLibro* nuevoStock = (const MovLibro*)actualizador;
@@ -176,29 +174,101 @@ void actualizaCantLibro(void* actualizado, void* actualizador)
 
 int actualizarArchivoLibros_ALU(const char* nombreArchivoLibros, const char* nombreArchivoLibrosIndice, Lista* plistaMov)
 {
-    ///Cargar indice en lista
     Lista listaIndiceLibros;
     listaCrearDeArchivo(&listaIndiceLibros, nombreArchivoLibrosIndice, sizeof(IndLibro));
 
-    IndLibro indLibro;
-    IndLibro* pIndLibro;
+    FILE* archLibros = fopen(nombreArchivoLibros, "r+b");
 
-    ListaIterador iteradorLibros;
-    listaIteradorCrear(&iteradorLibros, &listaIndiceLibros);
-
-    pIndLibro = (IndLibro*)listaIteradorPrimero(&iteradorLibros);
-
-    puts("Indice de libros");
-    while(pIndLibro != NULL)
+    if(!archLibros)
     {
-        printf("%s - %d\n", pIndLibro->codigo, pIndLibro->nroReg);
-        pIndLibro = (IndLibro*)listaIteradorSiguiente(&iteradorLibros);
+        printf("ERROR. No se pudo abrir el archivo de libros.\n");
+        return ERR_ARCHIVO;
     }
 
-    ///Buscar en el indice para encontrar la posicion.
-    ///Ir al registro encontrado y actualizar la cantidad.
-    ///Se debe validar que la cantidad no sea negativa, sino se descarta.
+    IndLibro* pIndLibro;
+    MovLibro* pMovLibro;
 
+    ListaIterador iteradorIndice, iteradorMovs;
+    listaIteradorCrear(&iteradorIndice, &listaIndiceLibros);
+    listaIteradorCrear(&iteradorMovs, plistaMov);
 
+    pIndLibro = (IndLibro*)listaIteradorPrimero(&iteradorIndice);
+    pMovLibro = (MovLibro*)listaIteradorPrimero(&iteradorMovs);
 
+    Libro libro;
+
+    ///Itero sobre el indice y los movimientos
+    while(pIndLibro != NULL && pMovLibro != NULL)
+    {
+        ///Ir al registro encontrado y leerlo
+        fseek(archLibros, pIndLibro->nroReg * sizeof(Libro), SEEK_SET);
+        fread(&libro, sizeof(Libro), 1, archLibros);
+        ///Se debe validar que la cantidad no sea negativa, sino se descarta.
+        if(libro.cantidad + pMovLibro->cantidad >= 0)
+        {
+            libro.cantidad += pMovLibro->cantidad;
+            fseek(archLibros, -(long)sizeof(Libro), SEEK_CUR);
+            fwrite(&libro, sizeof(Libro), 1, archLibros);
+        }
+        ///Sigo iterando.
+        pIndLibro = (IndLibro*)listaIteradorSiguiente(&iteradorIndice);
+        pMovLibro = (MovLibro*)listaIteradorSiguiente(&iteradorMovs);
+    }
+
+    fclose(archLibros);
+    listaDestruir(&listaIndiceLibros);
+
+    return TODO_OK;
+}
+
+int normalizarNombresLibros_ALU(const char* nombreArchivoLibros)
+{
+    FILE* archLibros = fopen(nombreArchivoLibros, "r+b");
+
+    if(!archLibros)
+    {
+        printf("ERROR. No se pudo abrir el archivo de libros.\n");
+        return ERR_ARCHIVO;
+    }
+
+    Libro libro;
+    fread(&libro, sizeof(Libro), 1, archLibros);
+
+    while(!feof(archLibros))
+    {
+        char cadDest[41];
+        normalizar(libro.nombre, cadDest);
+        fseek(archLibros, -(long)sizeof(Libro), SEEK_CUR);
+        fwrite(&libro, sizeof(Libro), 1, archLibros);
+        fseek(archLibros, -0L, SEEK_CUR);
+        fread(&libro, sizeof(Libro), 1, archLibros);
+    }
+
+    fclose(archLibros);
+    return TODO_OK;
+}
+
+void normalizar_ALU(const char* cadOri, char* cadDest)
+{
+    SecuenciaPal secL,
+                 secE;
+
+    crearSecuencia(&secL, (char*)cadOri);
+    crearSecuencia(&secE, cadDest);
+
+    Palabra pal;
+
+    leerPalabra(&secL, &pal);
+
+    while(!finSecuencia(&secL))
+    {
+        aTitulo(&pal);
+        escribirPalabra(&secE, &pal);
+        escribirCaracter(&secE, ' ');
+        leerPalabra(&secL, &pal);
+    }
+
+    reposicionarCursor(&secE, -1);
+
+    cerrarSecuencia(&secE);
 }
